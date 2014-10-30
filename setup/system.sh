@@ -1,9 +1,14 @@
 #!/bin/sh
 if ! [ -e .system-setup ];then
   # assure make
-  if ! [ -e ~/.ssh/id_rsa.pub ];then
-    mkdir -p ~/.ssh
-    ssh-keygen -b 4096 -q -N '' -f ~/.ssh/id_rsa
+  if ! [ -e ~/.ssh/id_rsa_virtkick ];then
+    ssh-keygen -q -N "" -f ~/.ssh/id_rsa_virtkick
+    echo '
+Host localhost
+  User virtkick
+  IdentityFile ~/.ssh/id_rsa_virtkick
+  StrictHostKeyChecking no
+    ' >> ~/.ssh/config
   fi
   echo 'I am about to create user "virtkick" in group "kvm" and add your public ssh key to allow passwordless login'
   sudo bash -c '
@@ -13,15 +18,6 @@ if ! [ -e .system-setup ];then
       sleep 1 # give some time for virtkick to start
     fi
   '
-  if ! [ -e "~/.ssh/id_rsa_virtkick" ];then
-    ssh-keygen -q -N "" -f ~/.ssh/id_rsa_virtkick
-    echo '
-Host localhost
-  User virtkick
-  IdentityFile ~/.ssh/id_rsa_virtkick
-  StrictHostKeyChecking no
-    ' >> ~/.ssh/config
-  fi
 
   sudo bash -c '
   if ! [ -e /var/run/libvirt/libvirt-sock ];then
@@ -40,7 +36,6 @@ Host localhost
   mkdir -p ~virtkick/{.ssh,hdd,iso} &&
   chown -R virtkick:kvm ~virtkick &&
   chmod 750 ~virtkick &&
-  cat /dev/zero | ssh-keygen -q -N "" -f ~/.ssh/id_rsa_virtkick &&
   cat > ~virtkick/.ssh/authorized_keys' < ~/.ssh/id_rsa_virtkick.pub
   if ! ssh -o "StrictHostKeyChecking no" virtkick@localhost virsh list > /dev/null;then
     echo 'Cannot run \"virsh list\" on virtkick@localhost, libvirt is not setup properly!'
