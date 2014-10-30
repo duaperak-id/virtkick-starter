@@ -19,6 +19,17 @@ Most things are already handled by `virtkick-start`, you only need Git.
 ```
 sudo apt-get install git
 ```
+### CentOS 6.5
+First of all you need git
+```
+sudo yum install git
+```
+
+After repo is cloned, invoke
+```
+sudo ./setup/distro/centos65.sh
+```
+Now below first run instructions should succeed.
 
 ### Other
 
