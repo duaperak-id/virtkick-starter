@@ -19,6 +19,12 @@ Host localhost
     fi
   '
 
+  export SSH_PORT=$(sudo grep -oE "^\s*Port\s+[0-9]+" /etc/ssh/sshd_config|grep -oE "[0-9]+")
+  if [ "$SSH_PORT" == "" ];then
+    export SSH_PORT="22"
+  fi
+  echo $SSH_PORT > .ssh-port
+
   sudo bash -c '
   if ! [ -e /var/run/libvirt/libvirt-sock ];then
     echo "Cannot find /var/run/libvirt/libvirt-sock, please install libvirt" && exit 1
@@ -37,9 +43,11 @@ Host localhost
   chown -R virtkick:kvm ~virtkick &&
   chmod 750 ~virtkick &&
   cat > ~virtkick/.ssh/authorized_keys' < ~/.ssh/id_rsa_virtkick.pub
-  if ! ssh -o "StrictHostKeyChecking no" virtkick@localhost virsh list > /dev/null;then
+  if ! ssh -p $SSH_PORT -o "StrictHostKeyChecking no" virtkick@localhost virsh list > /dev/null;then
     echo 'Cannot run \"virsh list\" on virtkick@localhost, libvirt is not setup properly!'
     echo 'virtkick user needs rights to read/write /var/run/libvirt/libvirt-sock'
 	fi
   touch .system-setup
+else
+  export SSH_PORT="$(cat .ssh-port 2> /dev/null || echo 22)"
 fi

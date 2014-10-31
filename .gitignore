@@ -4,5 +4,6 @@ node_modules
 .nvm
 .pyenv
 npm-debug.log
+.ssh-port
 .isos-done
 .system-setup

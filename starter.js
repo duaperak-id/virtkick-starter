@@ -263,7 +263,7 @@ function downloadIsos() {
     }
 
     console.log('[wget:' +iso.id+'] Starting download of iso: '+ iso.file);
-    var wget = spawn("./", "ssh -o \"StrictHostKeyChecking no\" virtkick@localhost wget -q -c -P iso \"" + iso.mirrors[0] + "\"");
+    var wget = spawn("./", "ssh -p " + (process.env.SSH_PORT || 22) +  " -o \"StrictHostKeyChecking no\" virtkick@localhost wget -q -c -P iso \"" + iso.mirrors[0] + "\"");
 //    var wget = spawn("./", "ssh virtkick@localhost curl -s -C - -o \"" + iso.file + "\" \"" + iso.mirrors[0] + "\"")
     bindOutput(wget, '[wget:' +iso.id+']', cb);
 
