@@ -44,8 +44,9 @@ Host localhost
   chmod 750 ~virtkick &&
   cat > ~virtkick/.ssh/authorized_keys' < ~/.ssh/id_rsa_virtkick.pub
   if ! ssh -p $SSH_PORT -o "StrictHostKeyChecking no" virtkick@localhost virsh list > /dev/null;then
-    echo 'Cannot run \"virsh list\" on virtkick@localhost, libvirt is not setup properly!'
+    echo 'Cannot run "virsh list" on virtkick@localhost, libvirt is not setup properly!'
     echo 'virtkick user needs rights to read/write /var/run/libvirt/libvirt-sock'
+    exit 1
 	fi
   touch .system-setup
 else
