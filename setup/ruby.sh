@@ -3,8 +3,6 @@ export RVM_DIR="$(pwd)/.rvm"
 VIRTKICK_RUBY_VERSION=$(grep "^ruby '.*'$" webapp/Gemfile | grep -oE "[0-9]+\.[0-9]+\.[0-9]+")
 SAVED_RUBY_VERSION=$(cat $RVM_DIR/installed 2> /dev/null || echo "")
 
-echo "1 > $VIRTKICK_RUBY_VERSION ; 2 > $SAVED_RUBY_VERSION|"
-
 if [ "$VIRTKICK_RUBY_VERSION" != "$SAVED_RUBY_VERSION" ];then
   rm -f "$RVM_DIR/installed"
 fi
