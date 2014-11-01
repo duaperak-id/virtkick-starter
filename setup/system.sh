@@ -14,7 +14,7 @@ Host localhost
   sudo bash -c '
     if which apt-get &> /dev/null;then
       echo "Detected apt-get based system, trying to auto install required packages"
-      (apt-get --fix-missing -y install git curl openssh-server qemu-kvm libvirt-bin python-pip python-libvirt python-libxml2)
+      (apt-get --fix-missing -y install git curl openssh-server qemu-kvm libvirt-bin python-pip python-libvirt python-libxml2 libxml2-dev)
       sleep 1 # give some time for virtkick to start
     fi
   '

@@ -1,25 +1,36 @@
 export RVM_DIR="$(pwd)/.rvm"
 
+VIRTKICK_RUBY_VERSION=$(grep "^ruby '.*'$" webapp/Gemfile | grep -oE "[0-9]+\.[0-9]+\.[0-9]+")
+SAVED_RUBY_VERSION=$(cat $RVM_DIR/installed 2> /dev/null || echo "")
+
+echo "1 > $VIRTKICK_RUBY_VERSION ; 2 > $SAVED_RUBY_VERSION|"
+
+if [ "$VIRTKICK_RUBY_VERSION" != "$SAVED_RUBY_VERSION" ];then
+  rm -f "$RVM_DIR/installed"
+fi
+
 if ! [ -e "$RVM_DIR/installed" ];then
   rm -rf "$RVM_DIR"
 fi
 
+export rvm_user_install_flag=1
+export rvm_path="$RVM_DIR"
 unset GEM_HOME # unset any previous ruby setup
 if ! [ -e "$RVM_DIR" ];then
 	mkdir -p "$RVM_DIR"
-	export rvm_user_install_flag=1
-	export rvm_path="$RVM_DIR"
+
 	curl -sSL https://get.rvm.io | bash -s -- --ignore-dotfiles #--autolibs=rvm_pkg
 	. .rvm/scripts/rvm
-  export PATH="$RVM_DIR/bin:$PATH"
-	rvm install 2.1.3
-	rvm alias create default 2.1.3
-  touch "$RVM_DIR/installed"
+#  export PATH="$RVM_DIR/bin:$PATH"
+
+	rvm install $VIRTKICK_RUBY_VERSION
+	rvm use $VIRTKICK_RUBY_VERSION
+	rvm alias create default $VIRTKICK_RUBY_VERSION
+  echo $VIRTKICK_RUBY_VERSION > "$RVM_DIR/installed"
 else
 	. .rvm/scripts/rvm
-	export PATH="$RVM_DIR/bin:$PATH"
+  rvm use $VIRTKICK_RUBY_VERSION
+  bundle config build.nokogiri --use-system-libraries
 fi
-which bundle > /dev/null
-
-
+which bundle |grep $RVM_DIR > /dev/null || (echo "Problem with ruby setup, bundle points to $(which bundle), should be in $RVM_DIR"; exit 1)
 
