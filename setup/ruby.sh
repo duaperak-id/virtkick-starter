@@ -25,6 +25,7 @@ if ! [ -e "$RVM_DIR" ];then
 	rvm use $VIRTKICK_RUBY_VERSION
 	rvm alias create default $VIRTKICK_RUBY_VERSION
   echo $VIRTKICK_RUBY_VERSION > "$RVM_DIR/installed"
+  bundle config build.nokogiri --use-system-libraries
 else
 	. .rvm/scripts/rvm
   rvm use $VIRTKICK_RUBY_VERSION
