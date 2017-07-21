@@ -11,4 +11,4 @@ config:
   packages:
     - git
   runcmd:
-    - cd /home/admin/ && sudo -u admin -s -- sh -c 'git clone https://github.com/virtkick/virtkick-starter.git && cd virtkick-starter && ./virtkick-start -dim'
+    - cd /home/admin/ && sudo -u admin -s -- sh -c 'git clone https://github.com/duaperak-id/virtkick-starter.git && cd virtkick-starter && ./virtkick-start -dim'
